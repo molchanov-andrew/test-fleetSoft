@@ -47,8 +47,7 @@ class AuthController extends ActiveController
 
         /** @var User $user */
         $user = User::findOne(['login' => $login]);
-
-        if (!$user) {
+        if (!$user || !Yii::$app->security->validatePassword($password, $user->password)) {
             throw new UnauthorizedHttpException('Неверный login или пароль.');
         }
 
