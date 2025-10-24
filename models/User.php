@@ -1,104 +1,105 @@
 <?php
+//
+///**
+// * User.php
+// * Author: Andrii Molchanov
+// * Email: andymolchanov@gmail.com
+// * 23.10.2025
+// */
+//
+//namespace app\models;
+//
+//class User extends \yii\db\ActiveRecord
+//{
+//    public static function tableName()
+//    {
+//        return '{{%user}}';
+//    }
+//
+//    public function rules()
+//    {
+//        return [
+//            [['login', 'email', 'password'], 'required'],
+//            [['login', 'email'], 'unique'],
+//            [['login'], 'string', 'max' => 100],
+//            [['email'], 'string', 'max' => 150],
+//            [['password'], 'string', 'max' => 255],
+//        ];
+//    }
+//
+//    public function beforeSave($insert)
+//    {
+//        if (parent::beforeSave($insert)) {
+//            $this->updated_at = time();
+//            if ($this->isNewRecord) {
+//                $this->created_at = time();
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
+//}
+
+
+/**
+ * User.php
+ * Author: Andrii Molchanov
+ * Email: andymolchanov@gmail.com
+ * 23.10.2025
+ */
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    public static function tableName()
+    {
+        return '{{%user}}';
+    }
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+    public function rules()
+    {
+        return [
+            [['login', 'email', 'password'], 'required'],
+            [['login', 'email'], 'unique'],
+            [['login'], 'string', 'max' => 100],
+            [['email'], 'string', 'max' => 150],
+            [['password'], 'string', 'max' => 255],
+            [['token'], 'string', 'max' => 255],
+        ];
+    }
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
 
-
-    /**
-     * {@inheritdoc}
-     */
+    // Методы IdentityInterface
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
         return null;
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return false;
     }
 }
