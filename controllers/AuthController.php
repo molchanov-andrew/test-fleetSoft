@@ -60,10 +60,10 @@ class AuthController extends ActiveController
         ];
 
         $jwt = JWT::encode($payload, $key, 'HS256');
-
+// это можно не делать но если приложение аннулирует токен при logout то нужно сохранять токен
         $user->token = $jwt;
 
-        if(!$user->save()){
+        if (!$user->save()) {
             $errors = $user->errors;
             return ['success' => false, 'errors' => $errors];
         }

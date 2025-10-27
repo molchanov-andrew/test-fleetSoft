@@ -1,32 +1,26 @@
 <?php
-/**
- * User.php
- * Author: Andrii Molchanov
- * Email: andymolchanov@gmail.com
- * 23.10.2025
- *
- *  This is the model class for table "book".
- *
- * @property int $id
- * @property string $login
- * @property string $password
- * @property string $email
- * @property int $created_at
- * @property int $updated_at
- */
 
 namespace app\models;
 
-use Yii;
-use yii\db\ActiveRecord;
-use yii\behaviors\TimestampBehavior;
-use yii\web\IdentityInterface;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
-
-class User extends ActiveRecord implements IdentityInterface
+/**
+ * This is the model class for table "book".
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $author
+ * @property int $created_at
+ * @property int $updated_at
+ */
+class Book extends ActiveRecord implements IdentityInterface
 {
+
     public function behaviors()
     {
         return [
@@ -38,37 +32,31 @@ class User extends ActiveRecord implements IdentityInterface
             ],
         ];
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'book';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function rules()
     {
         return [
-            [['login', 'email', 'password'], 'required'],
-            [['login', 'email'], 'unique'],
-            [['login'], 'string', 'max' => 100],
-            [['email'], 'string', 'max' => 150],
-            [['password'], 'string', 'max' => 255],
-            [['token'], 'string', 'max' => 255],
+            [['name', 'author'], 'required'],
+            [['created_at', 'updated_at'], 'integer'],
+            [['name', 'author'], 'string', 'max' => 100],
         ];
-    }
-
-    public function fields(){
-        return parent::fields();
-    }
-
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     public static function findIdentity($id)
     {
         return static::findOne($id);
     }
-
     public static function findIdentityByAccessToken($token, $type = null)
     {
         try {
@@ -77,6 +65,20 @@ class User extends ActiveRecord implements IdentityInterface
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'author' => 'Author',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
     }
     public function getId()
     {
@@ -92,4 +94,5 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return false;
     }
+
 }

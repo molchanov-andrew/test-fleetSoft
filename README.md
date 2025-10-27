@@ -231,3 +231,8 @@ vendor/bin/codecept run functional,unit --coverage --coverage-html --coverage-xm
 ```
 
 You can see code coverage output under the `tests/_output` directory.
+
+Соглашение:
+
+    предполагается, что все команды будут выполняться из корня проекта;
+    названия таблиц должны быть в единственном числе (если это возможно)

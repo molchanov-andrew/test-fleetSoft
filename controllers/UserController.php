@@ -83,7 +83,6 @@ class UserController extends ActiveController
             return ['success' => false, 'message' => 'Пользователь не найден'];
         }
 
-        // Проверяем, что пользователь смотрит свой профиль
         $currentUser = Yii::$app->user->identity;
 
         if ($currentUser->id !== (int)$id) {

@@ -47,6 +47,10 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                    '' => 'site/index',
+                    'site/login' => 'site/login',
+                    'site/about' => 'site/about',
+                    'site/contact' => 'site/contact',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['user'],
@@ -58,6 +62,19 @@ $config = [
                         'POST login' => 'login',
                     ],
                     'pluralize' => false,
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['book'],
+                    'extraPatterns' => [
+                        'POST create' => 'create',
+                    ],
+                    'pluralize' => true,
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['book'],
+                    'pluralize' => true,
                 ],
             ],
         ]

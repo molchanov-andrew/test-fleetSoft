@@ -127,25 +127,4 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionRegister()
-    {
-        $post = Yii::$app->request->post();
-        $user = new User();
-        if ($post){
-            $user = new User();
-            $user->login = $post['username'];
-            $user->email = $post['email'];
-            $user->password = $post['password'];
-            if($user->save(false)){
-                return json_encode('kjlkjlkj');
-            }
-        }
-        return $this->render('../user/register',['model'=>$user]);
-    }
-
 }
